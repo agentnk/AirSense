@@ -6,7 +6,7 @@ This document outlines the planned features and technical debt to be addressed i
 
 - **Live API Integration**: Replace the current mock `APIService` with a live integration using OpenAQ or AQICN for real-world Sri Lankan data.
 - **Data Caching & Offline Support**: Implement a robust caching mechanism (e.g., using `UserDefaults` or local file storage) so the app can display the last known AQI when offline.
-- **Location Search**: Add a search bar to the Home or Map screen allowing users to find AQI for specific towns/cities beyond the predefined list.
+- **Location Search**: Add a search bar to the Home or Map screen allowing users to find AQI for specific towns/cities beyond the predefined list. *(Completed in v1.1.0)*
 
 ## Medium-Term Goals
 

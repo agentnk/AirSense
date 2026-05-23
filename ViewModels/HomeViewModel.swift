@@ -32,6 +32,15 @@ class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func selectCity(_ city: CityLocation) {
+        CityManager.shared.addCity(city)
+        UserDefaults.standard.set(false, forKey: Constants.UserDefaults.useCurrentLocation)
+        UserDefaults.standard.set(city.id, forKey: Constants.UserDefaults.selectedCity)
+        Task {
+            await refreshData()
+        }
+    }
+    
     func refreshData() async {
         let useCurrentLocation = UserDefaults.standard.bool(forKey: Constants.UserDefaults.useCurrentLocation)
         if useCurrentLocation, let coord = locationManager.location {

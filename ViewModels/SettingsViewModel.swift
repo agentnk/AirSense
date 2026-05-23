@@ -28,8 +28,12 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
-    let cities = CityLocation.predefinedCities
+    @Published var cities = CityManager.shared.getCities()
     private let notificationService: NotificationServiceProtocol
+    
+    func refreshCities() {
+        self.cities = CityManager.shared.getCities()
+    }
     
     init(notificationService: NotificationServiceProtocol) {
         self.notificationService = notificationService

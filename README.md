@@ -5,9 +5,10 @@ AirSense Lanka is a production-ready iOS application built using SwiftUI that pr
 ## Features
 
 - **Real-Time AQI Monitoring**: View the current AQI based on your location or selected city.
+- **Dynamic Location Search**: Search for any town or city across Sri Lanka on either the Map or Home screens.
 - **Pollutant Breakdown**: Detailed metrics for PM2.5, PM10, NO2, and CO.
-- **Interactive Map**: A MapKit-integrated screen showcasing AQI levels across Sri Lanka using color-coded markers.
-- **Customizable Settings**: Choose default cities, toggle location usage, switch themes, and configure AQI alerts.
+- **Interactive Map**: A MapKit-integrated screen showcasing AQI levels across Sri Lanka using color-coded markers and a premium floating search bar.
+- **Customizable Settings**: Select default cities (including user-searched locations), toggle location usage, switch themes, and configure AQI alerts.
 - **Local Notifications**: Receive automatic alerts when air quality reaches unhealthy levels.
 - **Modern UI**: Apple-style minimalistic design using SF Symbols, rounded cards, and smooth transitions.
 

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct HomeView: View {
     @EnvironmentObject private var viewModel: HomeViewModel
+    @State private var showSearchSheet = false
     
     var body: some View {
         NavigationView {
@@ -34,6 +35,22 @@ struct HomeView: View {
                 }
             }
             .navigationTitle(Constants.Strings.appName)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showSearchSheet = true
+                    }) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(Theme.aqiGood)
+                    }
+                }
+            }
+            .sheet(isPresented: $showSearchSheet) {
+                LocationSearchSheet { city in
+                    viewModel.selectCity(city)
+                }
+            }
             .task {
                 await viewModel.refreshData()
             }

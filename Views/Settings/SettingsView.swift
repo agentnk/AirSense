@@ -47,6 +47,9 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .onAppear {
+                viewModel.refreshCities()
+            }
         }
     }
 }

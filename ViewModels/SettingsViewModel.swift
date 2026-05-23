@@ -17,7 +17,7 @@ class SettingsViewModel: ObservableObject {
         didSet {
             UserDefaults.standard.set(airQualityAlerts, forKey: Constants.UserDefaults.airQualityAlerts)
             if airQualityAlerts {
-                NotificationService.shared.requestAuthorization()
+                notificationService.requestAuthorization()
             }
         }
     }
@@ -29,10 +29,12 @@ class SettingsViewModel: ObservableObject {
     }
     
     let cities = CityLocation.predefinedCities
+    private let notificationService: NotificationServiceProtocol
     
-    init() {
+    init(notificationService: NotificationServiceProtocol) {
+        self.notificationService = notificationService
         let defaults = UserDefaults.standard
-        // Set defaults if not existing
+        
         if defaults.object(forKey: Constants.UserDefaults.useCurrentLocation) == nil {
             defaults.set(true, forKey: Constants.UserDefaults.useCurrentLocation)
         }
@@ -43,7 +45,7 @@ class SettingsViewModel: ObservableObject {
             defaults.set(false, forKey: Constants.UserDefaults.airQualityAlerts)
         }
         if defaults.object(forKey: Constants.UserDefaults.appTheme) == nil {
-            defaults.set(0, forKey: Constants.UserDefaults.appTheme) // 0: System, 1: Light, 2: Dark
+            defaults.set(0, forKey: Constants.UserDefaults.appTheme)
         }
         
         self.useCurrentLocation = defaults.bool(forKey: Constants.UserDefaults.useCurrentLocation)

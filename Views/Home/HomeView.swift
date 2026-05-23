@@ -1,11 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var viewModel: HomeViewModel
-    
-    init(locationManager: LocationManager) {
-        _viewModel = StateObject(wrappedValue: HomeViewModel(locationManager: locationManager))
-    }
+    @EnvironmentObject private var viewModel: HomeViewModel
     
     var body: some View {
         NavigationView {
@@ -13,52 +9,64 @@ struct HomeView: View {
                 Theme.primaryBackground.ignoresSafeArea()
                 
                 if viewModel.isLoading && viewModel.aqiData == nil {
-                    LoadingView(message: "Updating Data...")
+                    LoadingView(message: Constants.Strings.updatingData)
                 } else if let error = viewModel.errorMessage {
-                    errorView(error)
+                    ErrorStateView(error: error, retryAction: {
+                        Task {
+                            await viewModel.refreshData()
+                        }
+                    })
                 } else if let data = viewModel.aqiData {
-                    contentView(data)
+                    ScrollView {
+                        VStack(spacing: 24) {
+                            AQICardView(data: data)
+                                .padding(.horizontal)
+                            
+                            PollutantGridView(pollutants: data.pollutants)
+                        }
+                        .padding(.vertical)
+                    }
+                    .refreshable {
+                        await viewModel.refreshData()
+                    }
                 } else {
-                    LoadingView(message: "Initializing...")
+                    LoadingView(message: Constants.Strings.initializing)
                 }
             }
-            .navigationTitle("AirSense Lanka")
+            .navigationTitle(Constants.Strings.appName)
             .task {
                 await viewModel.refreshData()
             }
         }
     }
+}
+
+// MARK: - Subcomponents
+
+struct PollutantGridView: View {
+    let pollutants: [Pollutant]
     
-    @ViewBuilder
-    private func contentView(_ data: AppAQIData) -> some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                AQICardView(data: data)
-                    .padding(.horizontal)
-                
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Pollutant Breakdown")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .padding(.horizontal)
-                    
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                        ForEach(data.pollutants) { pollutant in
-                            pollutantCard(pollutant)
-                        }
-                    }
-                    .padding(.horizontal)
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(Constants.Strings.pollutantBreakdown)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .padding(.horizontal)
+            
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                ForEach(pollutants) { pollutant in
+                    PollutantCardView(pollutant: pollutant)
                 }
             }
-            .padding(.vertical)
-        }
-        .refreshable {
-            await viewModel.refreshData()
+            .padding(.horizontal)
         }
     }
+}
+
+struct PollutantCardView: View {
+    let pollutant: Pollutant
     
-    @ViewBuilder
-    private func pollutantCard(_ pollutant: Pollutant) -> some View {
+    var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(pollutant.name)
                 .font(.headline)
@@ -76,24 +84,26 @@ struct HomeView: View {
         .background(Theme.secondaryBackground)
         .cornerRadius(12)
     }
+}
+
+struct ErrorStateView: View {
+    let error: String
+    let retryAction: () -> Void
     
-    @ViewBuilder
-    private func errorView(_ error: String) -> some View {
+    var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 50))
                 .foregroundColor(.red)
-            Text("Failed to load data")
+            Text(Constants.Strings.failedToLoad)
                 .font(.headline)
             Text(error)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            Button("Try Again") {
-                Task {
-                    await viewModel.refreshData()
-                }
+            Button(Constants.Strings.tryAgain) {
+                retryAction()
             }
             .buttonStyle(.borderedProminent)
             .padding(.top)
@@ -103,6 +113,10 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(locationManager: LocationManager())
+        let api = APIService()
+        let loc = LocationManager()
+        let notif = NotificationService()
+        HomeView()
+            .environmentObject(HomeViewModel(apiService: api, locationManager: loc, notificationService: notif))
     }
 }

@@ -1,9 +1,12 @@
 import Foundation
 import UserNotifications
 
-class NotificationService {
-    static let shared = NotificationService()
-    
+protocol NotificationServiceProtocol {
+    func requestAuthorization()
+    func scheduleAQIAlert(for aqi: Int, category: AQICategory)
+}
+
+class NotificationService: NotificationServiceProtocol, ObservableObject {
     func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
             if granted {

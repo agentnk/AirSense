@@ -10,11 +10,13 @@ class HomeViewModel: ObservableObject {
     
     private let apiService: APIServiceProtocol
     private let locationManager: LocationManager
+    private let notificationService: NotificationServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(apiService: APIServiceProtocol = APIService.shared, locationManager: LocationManager) {
+    init(apiService: APIServiceProtocol, locationManager: LocationManager, notificationService: NotificationServiceProtocol) {
         self.apiService = apiService
         self.locationManager = locationManager
+        self.notificationService = notificationService
         
         // Listen for location changes if using current location
         locationManager.$location
@@ -69,7 +71,7 @@ class HomeViewModel: ObservableObject {
     private func checkAlerts(data: AppAQIData) {
         let alertsEnabled = UserDefaults.standard.bool(forKey: Constants.UserDefaults.airQualityAlerts)
         if alertsEnabled {
-            NotificationService.shared.scheduleAQIAlert(for: data.aqiValue, category: data.category)
+            notificationService.scheduleAQIAlert(for: data.aqiValue, category: data.category)
         }
     }
 }

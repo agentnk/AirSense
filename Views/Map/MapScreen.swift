@@ -2,8 +2,8 @@ import SwiftUI
 import MapKit
 
 struct MapScreen: View {
-    @StateObject private var viewModel = MapViewModel()
-    // Centered around Sri Lanka
+    @EnvironmentObject private var viewModel: MapViewModel
+    
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 7.8731, longitude: 80.7718),
         span: MKCoordinateSpan(latitudeDelta: 4.0, longitudeDelta: 4.0)
@@ -41,7 +41,6 @@ struct MapScreen: View {
                 await viewModel.fetchAllCityData()
             }
             .onTapGesture {
-                // Dismiss card when tapping outside
                 showDetail = false
             }
         }
@@ -51,5 +50,6 @@ struct MapScreen: View {
 struct MapScreen_Previews: PreviewProvider {
     static var previews: some View {
         MapScreen()
+            .environmentObject(MapViewModel(apiService: APIService()))
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var viewModel = SettingsViewModel()
+    @EnvironmentObject private var viewModel: SettingsViewModel
     
     var body: some View {
         NavigationView {
@@ -54,5 +54,6 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .environmentObject(SettingsViewModel(notificationService: NotificationService()))
     }
 }

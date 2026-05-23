@@ -10,7 +10,7 @@ class MapViewModel: ObservableObject {
     
     private let apiService: APIServiceProtocol
     
-    init(apiService: APIServiceProtocol = APIService.shared) {
+    init(apiService: APIServiceProtocol) {
         self.apiService = apiService
     }
     

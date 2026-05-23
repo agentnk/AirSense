@@ -21,7 +21,7 @@ protocol APIServiceProtocol {
     func fetchAQI(city: String) async throws -> AppAQIData
 }
 
-class APIService: APIServiceProtocol {
+class APIService: APIServiceProtocol, ObservableObject {
     static let shared = APIService()
     
     // For this example, we'll return mock data to simulate an API call

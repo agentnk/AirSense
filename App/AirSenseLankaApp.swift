@@ -2,13 +2,28 @@ import SwiftUI
 
 @main
 struct AirSenseLankaApp: App {
-    @StateObject private var locationManager = LocationManager()
+    @StateObject private var locationManager: LocationManager
+    @StateObject private var homeViewModel: HomeViewModel
+    @StateObject private var mapViewModel: MapViewModel
+    @StateObject private var settingsViewModel: SettingsViewModel
+    
     @AppStorage(Constants.UserDefaults.appTheme) private var appTheme = 0
+    
+    init() {
+        let loc = LocationManager()
+        let api = APIService()
+        let notif = NotificationService()
+        
+        _locationManager = StateObject(wrappedValue: loc)
+        _homeViewModel = StateObject(wrappedValue: HomeViewModel(apiService: api, locationManager: loc, notificationService: notif))
+        _mapViewModel = StateObject(wrappedValue: MapViewModel(apiService: api))
+        _settingsViewModel = StateObject(wrappedValue: SettingsViewModel(notificationService: notif))
+    }
     
     var body: some Scene {
         WindowGroup {
             TabView {
-                HomeView(locationManager: locationManager)
+                HomeView()
                     .tabItem {
                         Label("Home", systemImage: "house.fill")
                     }
@@ -23,9 +38,11 @@ struct AirSenseLankaApp: App {
                         Label("Settings", systemImage: "gearshape.fill")
                     }
             }
+            .environmentObject(homeViewModel)
+            .environmentObject(mapViewModel)
+            .environmentObject(settingsViewModel)
             .preferredColorScheme(colorScheme(for: appTheme))
             .onAppear {
-                // Request location permissions on first launch if useCurrentLocation is enabled
                 let useCurrentLocation = UserDefaults.standard.bool(forKey: Constants.UserDefaults.useCurrentLocation)
                 if useCurrentLocation {
                     locationManager.requestPermission()
@@ -39,7 +56,7 @@ struct AirSenseLankaApp: App {
         switch theme {
         case 1: return .light
         case 2: return .dark
-        default: return nil // System default
+        default: return nil
         }
     }
 }

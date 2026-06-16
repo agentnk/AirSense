@@ -1,21 +1,5 @@
 import Foundation
 
-enum APIError: Error, LocalizedError {
-    case invalidURL
-    case networkError(Error)
-    case decodingError(Error)
-    case invalidResponse
-    
-    var errorDescription: String? {
-        switch self {
-        case .invalidURL: return "Invalid URL provided."
-        case .networkError(let error): return "Network error: \(error.localizedDescription)"
-        case .decodingError(let error): return "Failed to decode data: \(error.localizedDescription)"
-        case .invalidResponse: return "Invalid response from server."
-        }
-    }
-}
-
 protocol APIServiceProtocol {
     func fetchAQI(latitude: Double, longitude: Double) async throws -> AppAQIData
     func fetchAQI(city: String) async throws -> AppAQIData

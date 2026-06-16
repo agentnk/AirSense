@@ -3,7 +3,6 @@ import SwiftUI
 struct Theme {
     static let primaryBackground = Color(UIColor.systemBackground)
     static let secondaryBackground = Color(UIColor.secondarySystemBackground)
-    static let textPrimary = Color.primary
     static let textSecondary = Color.secondary
     
     // AQI Colors

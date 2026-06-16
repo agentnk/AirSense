@@ -1,6 +1,6 @@
 # AirSense Lanka
 
-AirSense Lanka is a production-ready iOS application built using SwiftUI that provides real-time Air Quality Index (AQI) monitoring for various locations across Sri Lanka. It utilizes modern Apple design guidelines, MVVM architecture, and smooth animations to deliver a premium user experience.
+AirSense Lanka is a production-ready iOS application built using SwiftUI that provides real-time Air Quality Index (AQI) monitoring for various locations across Sri Lanka. It utilizes modern Apple design guidelines, MVVM architecture, and smooth animations to deliver a premium user experience. The codebase is fully optimized, keeping a clean architecture by removing unused resources and dead code.
 
 ## Features
 
